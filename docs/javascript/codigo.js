@@ -41,6 +41,17 @@ document.getElementById('addProduto').addEventListener('click', function () {
 
 //grupo javascript
 
+$('form').submit(function(e) {
+  e.preventDefault(); // Impede o comportamento padrão de envio do formulário
+  var dadosDoFormulario = $(this).serialize(); // Coleta os dados do formulário
+
+  $.post('https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/menu/', dadosDoFormulario, function(response) {
+    alert(response.message); // Exibe uma mensagem com a resposta do servidor
+    location.reload(); // Recarrega a página
+  });
+});
+
+
 $.ajax({
   url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos/',
   type: 'GET',
@@ -106,7 +117,7 @@ $('#svgGrupo').click(function() {
     success: function(response) {
       console.log(response.message);
       // Recarregar os grupos após a exclusão
-      carregarGrupos();
+      window.location.reload();
     },
     error: function(error) {
       console.log(error);
@@ -123,7 +134,7 @@ $('#svgProduto').click(function() {
     success: function(response) {
       console.log(response.message);
       // Recarregar os produtos após a exclusão
-      carregarProdutos();
+      window.location.reload();
     },
     error: function(error) {
       console.log(error);
