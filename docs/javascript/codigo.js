@@ -42,7 +42,7 @@ document.getElementById('addProduto').addEventListener('click', function () {
 //grupo javascript
 
 $.ajax({
-  url: 'http://localhost:5000/grupos/',
+  url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos/',
   type: 'GET',
   success: function (grupos) {
     var select = $('#grupoexistente');
@@ -59,7 +59,7 @@ $.ajax({
 // segunda parte javascript
 // Preencher o selectGrupo com os dados dos grupos
 $.ajax({
-  url: 'http://localhost:5000/grupos/',
+  url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos/',
   type: 'GET',
   success: function (grupos) {
     grupos.forEach(function (grupo) {
@@ -81,7 +81,7 @@ selectGrupo.addEventListener('change', function () {
   // Obter os dados dos produtos para o grupo selecionado
   var grupoSelecionado = this.value;
   $.ajax({
-    url: 'http://localhost:5000/produtos/' + grupoSelecionado,
+    url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/produtos/' + grupoSelecionado,
     type: 'GET',
     success: function (produtos) {
       produtos.forEach(function (produto) {
@@ -101,7 +101,7 @@ $('#svgGrupo').click(function() {
   var grupoSelecionado = $('#selectGrupo').val();
 
   $.ajax({
-    url: 'http://localhost:5000/grupos/' + grupoSelecionado,
+    url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos/' + grupoSelecionado,
     type: 'DELETE',
     success: function(response) {
       console.log(response.message);
@@ -118,7 +118,7 @@ $('#svgProduto').click(function() {
   var produtoSelecionado = $('#selectProduto').val();
 
   $.ajax({
-    url: 'http://localhost:5000/produtos/' + produtoSelecionado,
+    url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/produtos/' + produtoSelecionado,
     type: 'DELETE',
     success: function(response) {
       console.log(response.message);

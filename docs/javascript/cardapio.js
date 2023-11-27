@@ -1,4 +1,4 @@
-fetch('http://localhost:5000/grupos/')
+fetch('https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos/')
   .then(response => response.json())
   .then(grupos => {
     const cardapioDiv = document.getElementById('cardapio');
