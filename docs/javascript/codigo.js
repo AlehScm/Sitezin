@@ -1,43 +1,134 @@
-var swiper = new Swiper('.swiper-container', {
-    slidesPerView: 1,
-    navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-    },
-    effect: 'coverflow',
-    coverflowEffect: {
-        rotate: 50,
-        stretch: 0,
-        depth: 100,
-        modifier: 1,
-        slideShadows: true,
-    },
+document.getElementById('grupoexistente').addEventListener('change', function () {
+  var grupoInput = document.getElementById('grupo');
+  if (this.value) {
+    grupoInput.style.display = 'none';
+  } else {
+    grupoInput.style.display = 'block';
+  }
 });
 
-var nextButton = document.querySelector('.swiper-button-next');
-var prevButton = document.querySelector('.swiper-button-prev');
+document.getElementById('addProduto').addEventListener('click', function () {
+  var produtosDiv = document.getElementById('produtos');
+  var novoProdutoDiv = document.createElement('div');
+  novoProdutoDiv.className = 'produto';
 
-nextButton.style.color = '#ffff00'; // Muda a cor das setas para vermelho
-prevButton.style.color = '#ffff00'; // Muda a cor das setas para vermelho
+  var nomeProdutoInput = document.createElement('input');
+  nomeProdutoInput.type = 'text';
+  nomeProdutoInput.className = 'produto';
+  nomeProdutoInput.name = 'produto[]'; // Modificado para array
+  nomeProdutoInput.placeholder = 'Nome do Produto';
+  nomeProdutoInput.required = true;
+  novoProdutoDiv.appendChild(nomeProdutoInput);
+  
+  var precoProdutoInput = document.createElement('input');
+  precoProdutoInput.type = 'number';
+  precoProdutoInput.className = 'preco';
+  precoProdutoInput.name = 'preco[]'; // Modificado para array
+  precoProdutoInput.placeholder = 'Preço do Produto';
+  precoProdutoInput.step = '0.01';
+  precoProdutoInput.required = true;
+  novoProdutoDiv.appendChild(precoProdutoInput);
 
-nextButton.style.fontSize = '32px'; // Ajusta o tamanho das setas
-prevButton.style.fontSize = '32px'; // Ajusta o tamanho das setas
+  var excluirProdutoBtn = document.createElement('button');
+  excluirProdutoBtn.textContent = 'Excluir';
+  excluirProdutoBtn.addEventListener('click', function () {
+    produtosDiv.removeChild(novoProdutoDiv);
+  });
+  novoProdutoDiv.appendChild(excluirProdutoBtn);
 
-nextButton.style.right = '30%'; // Ajusta a distância da seta direita para a borda direita
-prevButton.style.left = '30%'; // Ajusta a distância da seta esquerda para a borda esquerda
+  produtosDiv.appendChild(novoProdutoDiv);
+});
 
+//grupo javascript
 
-// Verifica o tamanho da tela
-if (window.innerWidth < 768) {
-    // Para telas pequenas (ex: smartphones)
-    nextButton.style.right = '5%';
-    prevButton.style.left = '5%';
-  } else if (window.innerWidth < 1024) {
-    // Para telas médias (ex: tablets)
-    nextButton.style.right = '5%';
-    prevButton.style.left = '5%';
-  } else {
-    // Para telas grandes (ex: desktops)
-    nextButton.style.right = '30%';
-    prevButton.style.left = '30%';
+$.ajax({
+  url: 'http://localhost:5000/grupos/',
+  type: 'GET',
+  success: function (grupos) {
+    var select = $('#grupoexistente');
+    grupos.forEach(function (grupo) {
+      var option = new Option(grupo, grupo);
+      select.append($(option));
+    });
+  },
+  error: function (error) {
+    console.log(error);
   }
+});
+
+// segunda parte javascript
+// Preencher o selectGrupo com os dados dos grupos
+$.ajax({
+  url: 'http://localhost:5000/grupos/',
+  type: 'GET',
+  success: function (grupos) {
+    grupos.forEach(function (grupo) {
+      var option = new Option(grupo, grupo);
+      selectGrupo.append(option);
+    });
+  },
+  error: function (error) {
+    console.log(error);
+  }
+});
+
+// Adicionar um ouvinte de eventos ao selectGrupo para preencher o selectProduto quando um grupo é selecionado
+selectGrupo.addEventListener('change', function () {
+  // Limpar o selectProduto
+  while (selectProduto.firstChild) {
+    selectProduto.removeChild(selectProduto.firstChild);
+  }
+  // Obter os dados dos produtos para o grupo selecionado
+  var grupoSelecionado = this.value;
+  $.ajax({
+    url: 'http://localhost:5000/produtos/' + grupoSelecionado,
+    type: 'GET',
+    success: function (produtos) {
+      produtos.forEach(function (produto) {
+        var option = new Option(produto.nome, produto.id); // Use o ID do produto como o valor
+        selectProduto.append(option);
+      });
+    },
+    error: function (error) {
+      console.log(error);
+    }
+  });
+})
+
+
+// Suponha que seu SVG tenha um id de 'svgGrupo' para grupos e 'svgProduto' para produtos
+$('#svgGrupo').click(function() {
+  var grupoSelecionado = $('#selectGrupo').val();
+
+  $.ajax({
+    url: 'http://localhost:5000/grupos/' + grupoSelecionado,
+    type: 'DELETE',
+    success: function(response) {
+      console.log(response.message);
+      // Recarregar os grupos após a exclusão
+      carregarGrupos();
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  });
+});
+
+$('#svgProduto').click(function() {
+  var produtoSelecionado = $('#selectProduto').val();
+
+  $.ajax({
+    url: 'http://localhost:5000/produtos/' + produtoSelecionado,
+    type: 'DELETE',
+    success: function(response) {
+      console.log(response.message);
+      // Recarregar os produtos após a exclusão
+      carregarProdutos();
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  });
+});
+
+

@@ -1,77 +1,122 @@
 from flask import Flask, request, jsonify 
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, date
+from sqlalchemy import func
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
-data_nascimento = date(2000, 1, 1)
-
-class User(db.Model):
+class Menu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(50))
-    email = db.Column(db.String(120), unique=True)
-    telefone = db.Column(db.String(20))
-    senha = db.Column(db.String(80))
-    data_nascimento = db.Column(db.Date)
-    pais = db.Column(db.String(50))
-    salgado_favorito = db.Column(db.String(50))
-    genero = db.Column(db.String(10))
+    grupo = db.Column(db.String(50))
+    produtos = db.relationship('Produto', backref='menu', lazy=True, cascade="all,delete")
+
+class Produto(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(120))
+    preco = db.Column(db.Float)
+    menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'), nullable=False)
 
 with app.app_context():
     db.create_all()
 
-
 # ROTAS
 
-@app.route('/user/', methods=['POST'])
-def create_user():
+@app.route('/menu/', methods=['POST'])
+def create_menu():
     data = request.form
-    data_nascimento = datetime.strptime(data['data_nascimento'], '%Y-%m-%d').date()
-    user = User(nome=data['nome'], email=data['email'], telefone=data['telefone'], senha=data['senha'], data_nascimento=data_nascimento, pais=data['pais'], salgado_favorito=data['salgado_favorito'], genero=data['genero'])
-    db.session.add(user)
+    grupo = data['grupoexistente'] if data['grupoexistente'] else data['grupo']
+    produtos = request.form.getlist('produto[]')  # Modificado para array
+    precos = request.form.getlist('preco[]')  # Modificado para array
+
+    # Tenta recuperar o grupo existente
+    menu = Menu.query.filter_by(grupo=grupo).first()
+
+    # Se o grupo não existir, cria um novo
+    if menu is None:
+        menu = Menu(grupo=grupo)
+        db.session.add(menu)
+
+    # Itera sobre os produtos e preços, criando novos produtos e adicionando ao grupo
+    for produto, preco in zip(produtos, precos):
+        novo_produto = Produto(nome=produto, preco=preco, menu=menu)
+        db.session.add(novo_produto)
+
     db.session.commit()
-    return jsonify({'message': 'Usuário criado com sucesso!'}), 201
+    return jsonify({'message': 'Cardápio criado com sucesso!'}), 201
 
-
-
-
-@app.route('/user/<id>', methods=['GET'])
-def retrieve_user(id):
-    user = User.query.get(id)
-    if user is None:
-        return jsonify({'message': 'Usuário não encontrado'}), 404
+@app.route('/menu/<id>', methods=['GET'])
+def retrieve_menu(id):
+    menu = Menu.query.get(id)
+    if menu is None:
+        return jsonify({'message': 'Cardápio não encontrado'}), 404
     else:
-        return jsonify({'nome': user.nome, 'email': user.email, 'telefone': user.telefone, 'senha': user.senha, 'data_nascimento': user.data_nascimento, 'pais': user.pais, 'salgado_favorito': user.salgado_favorito, 'genero': user.genero})
+        produtos = [{'nome': produto.nome, 'preco': produto.preco} for produto in menu.produtos]
+        return jsonify({'grupo': menu.grupo, 'produtos': produtos})
 
-@app.route('/user/<id>', methods=['PUT'])
-def update_user(id):
+@app.route('/menu/<id>', methods=['PUT'])
+def update_menu(id):
     data = request.get_json()
-    user = User.query.get(id)
-    if user is None:
-        return jsonify({'message': 'Usuário não encontrado'}), 404
+    menu = Menu.query.get(id)
+    if menu is None:
+        return jsonify({'message': 'Cardápio não encontrado'}), 404
     else:
-        user.nome = data['nome']
-        user.email = data['email']
-        user.telefone = data['telefone']
-        user.senha = data['senha']
-        user.data_nascimento = data['data_nascimento']
-        user.pais = data['pais']
-        user.salgado_favorito = data['salgado_favorito']
-        user.genero = data['genero']
+        menu.grupo = data['grupo']
+        # Atualiza os produtos existentes ou adiciona novos produtos
+        for produto_data in data['produtos']:
+            produto = Produto.query.filter_by(nome=produto_data['nome'], menu=menu).first()
+            if produto is None:
+                produto = Produto(nome=produto_data['nome'], menu=menu)
+                db.session.add(produto)
+            produto.preco = produto_data['preco']
         db.session.commit()
-        return jsonify({'message': 'Usuário atualizado com sucesso!'})
+        return jsonify({'message': 'Cardápio atualizado com sucesso!'})
 
-@app.route('/user/<id>', methods=['DELETE'])
-def delete_user(id):
-    user = User.query.get(id)
-    if user is None:
-        return jsonify({'message': 'Usuário não encontrado'}), 404
+@app.route('/grupos/', methods=['GET'])
+def get_grupos():
+    grupos = Menu.query.with_entities(Menu.grupo).distinct()
+    return jsonify([grupo[0] for grupo in grupos])
+
+@app.route('/produtos/<grupo>', methods=['GET'])
+def get_produtos(grupo):
+    menu = Menu.query.filter_by(grupo=grupo).first()
+    if menu is None:
+        return jsonify({'message': 'Grupo não encontrado'}), 404
     else:
-        db.session.delete(user)
+        produtos = [{'nome': produto.nome, 'preco': produto.preco} for produto in menu.produtos]
+        return jsonify(produtos)    
+
+@app.route('/grupos/<nome>', methods=['DELETE'])
+def delete_grupo(nome):
+    grupo = Menu.query.filter(func.lower(Menu.grupo) == func.lower(nome)).first()
+    if grupo is None:
+        return jsonify({'message': 'Grupo não encontrado'}), 404
+    else:
+        db.session.delete(grupo)
         db.session.commit()
-        return jsonify({'message': 'Usuário excluído com sucesso!'})
+        return jsonify({'message': 'Grupo excluído com sucesso!'})
+
+@app.route('/produtos/<nome>', methods=['DELETE'])
+def delete_produto(nome):
+    produto = Produto.query.filter(func.lower(Produto.nome) == func.lower(nome)).first()
+    if produto is None:
+        return jsonify({'message': 'Produto não encontrado'}), 404
+    else:
+        db.session.delete(produto)
+        db.session.commit()
+        return jsonify({'message': 'Produto excluído com sucesso!'})
+
+@app.route('/grupos_produtos/', methods=['GET'])
+def get_grupos_produtos():
+    grupos = Menu.query.all()
+    grupos_produtos = []
+    for grupo in grupos:
+        produtos = [{'nome': produto.nome, 'preco': produto.preco} for produto in grupo.produtos]
+        grupos_produtos.append({'grupo': grupo.grupo, 'produtos': produtos})
+    return jsonify(grupos_produtos)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

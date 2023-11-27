@@ -241,7 +241,7 @@ footer {
     #menu a {
         font-size: 2em;
     }
-  
+
 
     #inicio {
         font-size: 3em;
@@ -367,6 +367,7 @@ button[type="submit"] {
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
+    margin-top: 20px;
 }
 
 /* Estilo do botão de envio quando hover */
@@ -375,36 +376,106 @@ button[type="submit"]:hover {
     /* Cor de fundo alterada quando o mouse está sobre o botão */
 }
 
-/*  Formatação de imagens com legenda        */
-
-/*figure.foto-legenda {
-    position: relative;
-    border: 8px solid /*inserir uma cor */
-/* box-shadow: 1px 1px 4px  black;
-    
+#butoesfinais{
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 20px;
 }
-figure.foto-legenda img{
 
-    width: 20%;
-    height: 20%;
 
+#addProduto{
+    background-color: #333;
+    /* Cor de fundo do botão */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
 }
-figure.foto-legenda figcaption{
-    opacity: 0;
-    position: absolute;
-    top: 0px;
-    background-color: rgba(0,0,0 ,.4);
-    color:white;
-    width: 20%;
-    height: 20%;
-    padding: 10px;
-    box-sizing: border-box;
-    transition: opacity 1s;
 
-}
-figure.foto-legenda hover figcaption {
 
-    opacity: 1;
+.icon-trash {
+    fill: white;
+    border: 2px solid white;
+    border-radius: 5px;
+    width: 8%;
+    /* Ajuste para o tamanho desejado */
+    height: 12%;
 }
-*/
-/* Formatação do menu */
+
+.icon-trash:hover {
+    fill: red;
+    border-color: red;
+}
+
+.produto {
+    display: flex;
+    justify-content: space-between; /* Alinha os itens nas extremidades opostas da linha */
+    gap: 2%;
+}
+
+.produto button {
+    margin-left: auto; /* Empurra o botão para a direita */
+}
+
+.produto button {
+    width: auto;
+    height: 40px;
+    border-color: red;
+}
+
+.produto button:hover {
+    color: red;
+}
+
+#selects {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  #selects select, #selects svg {
+    flex: 1 0 auto;
+  }
+  
+  #selects svg {
+    width: auto;   /* Altere para o valor desejado */
+    height: 37px;  /* Altere para o valor desejado */
+  }
+/* cardpio */
+
+  
+#cardapio {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Cria duas colunas */
+    grid-gap: 20px;
+    width: 80%;
+    margin: auto;
+    color: #FFFFFF; /* Adiciona cor branca ao texto */
+}
+
+.grupo-tabela {   
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1); /* Sombra branca */
+}
+
+.grupo {
+    font-weight: bold;
+    color: #FDB813;  /* Adiciona cor amarela */
+    text-align: center;
+}
+
+.tabela-produtos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.tabela-produtos td, .tabela-produtos th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;  /* Centraliza o texto */
+    color: #FFFFFF; /* Adiciona cor branca ao texto */
+}
