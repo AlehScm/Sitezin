@@ -15,6 +15,11 @@ hr {
 
 }
 
+.img{
+    width: 100%;
+    height: auto;
+}
+
 
 .imgprn img {
     width: 70%;
@@ -306,6 +311,11 @@ footer {
         font-weight: bold;
         color: white;
         font-size: 20px;
+    }
+
+    .img{
+        width: 50%;
+        height: auto;
     }
 
 }
