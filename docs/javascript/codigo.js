@@ -45,7 +45,7 @@ $('form').submit(function(e) {
   e.preventDefault(); // Impede o comportamento padrão de envio do formulário
   var dadosDoFormulario = $(this).serialize(); // Coleta os dados do formulário
 
-  $.post('https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/menu/', dadosDoFormulario, function(response) {
+  $.post('https://verbose-space-disco-wr749r6pq6j73v547-5000.app.github.dev/menu/', dadosDoFormulario, function(response) {
     alert(response.message); // Exibe uma mensagem com a resposta do servidor
     location.reload(); // Recarrega a página
   });
@@ -53,7 +53,7 @@ $('form').submit(function(e) {
 
 
 $.ajax({
-  url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos/',
+  url: 'https://verbose-space-disco-wr749r6pq6j73v547-5000.app.github.dev/grupos/',
   type: 'GET',
   success: function (grupos) {
     var select = $('#grupoexistente');
@@ -70,7 +70,7 @@ $.ajax({
 // segunda parte javascript
 // Preencher o selectGrupo com os dados dos grupos
 $.ajax({
-  url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos/',
+  url: 'https://verbose-space-disco-wr749r6pq6j73v547-5000.app.github.dev/grupos/',
   type: 'GET',
   success: function (grupos) {
     grupos.forEach(function (grupo) {
@@ -92,7 +92,7 @@ selectGrupo.addEventListener('change', function () {
   // Obter os dados dos produtos para o grupo selecionado
   var grupoSelecionado = this.value;
   $.ajax({
-    url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/produtos/' + grupoSelecionado,
+    url: 'https://verbose-space-disco-wr749r6pq6j73v547-5000.app.github.dev/produtos/' + grupoSelecionado,
     type: 'GET',
     success: function (produtos) {
       produtos.forEach(function (produto) {
@@ -112,7 +112,7 @@ $('#svgGrupo').click(function() {
   var grupoSelecionado = $('#selectGrupo').val();
 
   $.ajax({
-    url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos/' + grupoSelecionado,
+    url: 'https://verbose-space-disco-wr749r6pq6j73v547-5000.app.github.dev/grupos/' + grupoSelecionado,
     type: 'DELETE',
     success: function(response) {
       console.log(response.message);
@@ -129,7 +129,7 @@ $('#svgProduto').click(function() {
   var produtoSelecionado = $('#selectProduto').val();
 
   $.ajax({
-    url: 'https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/produtos/' + produtoSelecionado,
+    url: 'https://verbose-space-disco-wr749r6pq6j73v547-5000.app.github.dev/produtos/' + produtoSelecionado,
     type: 'DELETE',
     success: function(response) {
       console.log(response.message);
