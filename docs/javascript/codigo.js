@@ -15,7 +15,7 @@ document.getElementById('addProduto').addEventListener('click', function () {
   var nomeProdutoInput = document.createElement('input');
   nomeProdutoInput.type = 'text';
   nomeProdutoInput.className = 'produto';
-  nomeProdutoInput.name = 'produto[]'; // Modificado para array
+  nomeProdutoInput.name = 'produto[]'; // Modificado para arra
   nomeProdutoInput.placeholder = 'Nome do Produto';
   nomeProdutoInput.required = true;
   novoProdutoDiv.appendChild(nomeProdutoInput);
