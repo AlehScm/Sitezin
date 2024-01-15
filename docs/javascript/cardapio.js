@@ -1,4 +1,4 @@
-fetch('https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos/')
+fetch('https://verbose-space-disco-wr749r6pq6j73v547-5000.app.github.dev/grupos/')
   .then(response => response.json())
   .then(grupos => {
     const cardapioDiv = document.getElementById('cardapio');
@@ -26,7 +26,7 @@ fetch('https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/grupos
       precoCabecalho.textContent = 'Preço';
 
       // Busca os produtos para este grupo
-      fetch(`https://refactored-succotash-g4qp549jvww6cvjg9-5000.app.github.dev/produtos/${grupo}`)
+      fetch(`https://verbose-space-disco-wr749r6pq6j73v547-5000.app.github.dev/produtos/${grupo}`)
         .then(response => response.json())
         .then(produtos => {
           // Cria uma nova linha para cada produto
